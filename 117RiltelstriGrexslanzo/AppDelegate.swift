@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  117RiltelstriGrexslanzo
 //
-//  Created by Роман Главацкий on 30.03.2026.
+//  Created by Bennetted Warddd on 30.03.2026.
 //
 
 import UIKit

@@ -1,0 +1,6 @@
+framework module Pods_117RiltelstriGrexslanzo {
+  umbrella header "Pods-117RiltelstriGrexslanzo-umbrella.h"
+
+  export *
+  module * { export * }
+}
