@@ -17,16 +17,16 @@ struct HomeView: View {
                 heroHeader
                 statRow
                 nextGoalCard
-                sectionTitle("Jump in")
+                sectionTitle("Pick a lane")
                 quickActivityScroll
-                sectionTitle("Achievements")
+                sectionTitle("Badges")
                 achievementsPreview
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 28)
         }
         .appScreenBackdrop()
-        .navigationTitle("Home")
+        .navigationTitle("Studio")
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -38,14 +38,14 @@ struct HomeView: View {
 
     private var heroHeader: some View {
         ZStack(alignment: .topLeading) {
-            HomeHeroArtwork()
+            StudioHeroMark()
                 .frame(height: 120)
                 .padding(.top, 8)
                 .frame(maxWidth: .infinity)
                 .opacity(0.95)
 
             VStack(alignment: .leading, spacing: 10) {
-                Text("Welcome back")
+                Text("Studio pulse")
                     .font(.largeTitle.bold())
                     .foregroundStyle(SwiftUI.Color.appTextPrimary)
                 Text(subtitleLine)
@@ -53,10 +53,10 @@ struct HomeView: View {
                     .foregroundStyle(SwiftUI.Color.appTextSecondary)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Button(action: openActivities) {
+                Button(action: openDeck) {
                     HStack(spacing: 8) {
-                        Image(systemName: "play.fill")
-                        Text("Browse activities")
+                        Image(systemName: "rectangle.stack.fill")
+                        Text("Open the deck")
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                     }
@@ -77,29 +77,29 @@ struct HomeView: View {
 
     private var subtitleLine: String {
         if storage.totalActivitiesPlayed == 0 {
-            return "Pick a challenge and collect your first stars."
+            return "Start a workshop run and earn your first spark rating."
         }
         if storage.totalStars > 0 {
-            return "You have \(storage.totalStars) stars — keep the streak going."
+            return "You hold \(storage.totalStars) sparks — climb the next tier."
         }
-        return "Nice progress — open Activities to continue."
+        return "Solid momentum — jump back into the deck anytime."
     }
 
     private var statRow: some View {
         HStack(spacing: 12) {
             HomeStatPill(
                 icon: "star.fill",
-                title: "Stars",
+                title: "Sparks",
                 value: "\(storage.totalStars)"
             )
             HomeStatPill(
                 icon: "checkmark.circle.fill",
-                title: "Levels",
+                title: "Tiers",
                 value: "\(storage.completedLevelCount)"
             )
             HomeStatPill(
                 icon: "clock.fill",
-                title: "Time",
+                title: "Focus",
                 value: formattedPlayTime
             )
         }
@@ -119,9 +119,9 @@ struct HomeView: View {
         let goal = nextTrackedGoal
         return VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Image(systemName: "target")
+                Image(systemName: "scope")
                     .foregroundStyle(SwiftUI.Color.appAccent)
-                Text("Next goal")
+                Text("Focus target")
                     .font(.headline)
                     .foregroundStyle(SwiftUI.Color.appTextPrimary)
                 Spacer()
@@ -161,18 +161,18 @@ struct HomeView: View {
 
     private var nextTrackedGoal: (title: String, progress: Double) {
         if storage.totalActivitiesPlayed < 1 {
-            return ("First Victory — complete any challenge once.", min(1, Double(storage.totalActivitiesPlayed)))
+            return ("First Spark — complete any workshop once.", min(1, Double(storage.totalActivitiesPlayed)))
         }
         if storage.totalStars < 20 {
-            return ("Star Collector — earn 20 stars.", min(1, Double(storage.totalStars) / 20))
+            return ("Star Trail — gather 20 sparks.", min(1, Double(storage.totalStars) / 20))
         }
         if storage.totalPlayTime < 900 {
-            return ("Steady Focus — play for 15 minutes total.", min(1, storage.totalPlayTime / 900))
+            return ("Deep Run — stay in flow for 15 minutes overall.", min(1, storage.totalPlayTime / 900))
         }
         if storage.completedLevelCount < 12 {
-            return ("Academy Explorer — complete 12 levels.", min(1, Double(storage.completedLevelCount) / 12))
+            return ("Atlas Seeker — clear 12 tier checkpoints.", min(1, Double(storage.completedLevelCount) / 12))
         }
-        return ("All set! Try challenges on harder difficulty.", 1)
+        return ("Deck mastered — chase Peak mode scores.", 1)
     }
 
     private var quickActivityScroll: some View {
@@ -185,7 +185,7 @@ struct HomeView: View {
                         nextLevel: storage.nextPlayableLevel(for: kind, difficulty: .easy),
                         starsOnNext: storage.stars(for: kind, difficulty: .easy, level: storage.nextPlayableLevel(for: kind, difficulty: .easy))
                     )
-                    .onTapGesture { openActivities() }
+                    .onTapGesture { openDeck() }
                 }
             }
             .padding(.vertical, 4)
@@ -218,7 +218,7 @@ struct HomeView: View {
         }
     }
 
-    private func openActivities() {
+    private func openDeck() {
         withAnimation(.easeInOut(duration: 0.3)) {
             tabSelection?.wrappedValue = 1
         }
@@ -277,14 +277,14 @@ private struct HomeActivityCard: View {
                 .foregroundStyle(SwiftUI.Color.appTextPrimary)
                 .lineLimit(2)
                 .minimumScaleFactor(0.85)
-            Text("Easy · level \(nextLevel)")
+            Text("Calm · tier \(nextLevel)")
                 .font(.caption)
                 .foregroundStyle(SwiftUI.Color.appTextSecondary)
-            Text("\(totalStars) stars total")
+            Text("\(totalStars) sparks in this lane")
                 .font(.caption2)
                 .foregroundStyle(SwiftUI.Color.appTextSecondary.opacity(0.9))
             Spacer(minLength: 0)
-            Text("Tap to open")
+            Text("Tap for deck")
                 .font(.caption.bold())
                 .foregroundStyle(SwiftUI.Color.appAccent)
         }
@@ -294,26 +294,26 @@ private struct HomeActivityCard: View {
     }
 }
 
-private struct HomeHeroArtwork: View {
-    @State private var pulse = false
+private struct StudioHeroMark: View {
+    @State private var drift = false
 
     var body: some View {
         ZStack {
-            ForEach(0..<3, id: \.self) { i in
-                Circle()
-                    .stroke(SwiftUI.Color.appAccent.opacity(0.35 - Double(i) * 0.1), lineWidth: 2)
-                    .frame(width: 40 + CGFloat(i) * 36, height: 40 + CGFloat(i) * 36)
-                    .scaleEffect(pulse ? 1.05 + CGFloat(i) * 0.02 : 1)
+            ForEach(0..<4, id: \.self) { i in
+                RoundedRectangle(cornerRadius: 12 - CGFloat(i) * 2, style: .continuous)
+                    .stroke(SwiftUI.Color.appAccent.opacity(0.28 - Double(i) * 0.06), lineWidth: 2)
+                    .frame(width: 48 + CGFloat(i) * 32, height: 48 + CGFloat(i) * 20)
+                    .rotationEffect(.degrees(Double(i) * 8 + (drift ? 4 : -4)))
             }
-            Image(systemName: "graduationcap.fill")
+            Image(systemName: "wand.and.stars")
                 .font(.system(size: 44))
                 .foregroundStyle(SwiftUI.Color.appPrimary)
-                .shadow(color: SwiftUI.Color.appAccent.opacity(0.5), radius: 8)
+                .shadow(color: SwiftUI.Color.appAccent.opacity(0.45), radius: 10)
         }
         .frame(maxWidth: .infinity)
         .onAppear {
             withAnimation(.spring(response: 0.5, dampingFraction: 0.6).repeatForever(autoreverses: true)) {
-                pulse = true
+                drift = true
             }
         }
     }

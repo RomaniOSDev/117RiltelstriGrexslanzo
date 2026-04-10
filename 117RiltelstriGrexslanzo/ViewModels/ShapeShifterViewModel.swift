@@ -9,9 +9,9 @@ import Foundation
 import CoreGraphics
 import Combine
 
-final class ShapeShifterViewModel: ObservableObject {
+final class WharfSnapSession: ObservableObject {
     @Published var targets: [CGPoint] = []
-    @Published var pieces: [ShapePiece] = []
+    @Published var pieces: [WharfTile] = []
     @Published var timeRemaining: Int = 0
     @Published var isFinished = false
 
@@ -34,7 +34,7 @@ final class ShapeShifterViewModel: ObservableObject {
         targets = points
     }
 
-    func updatePiece(_ piece: ShapePiece) {
+    func updatePiece(_ piece: WharfTile) {
         if let index = pieces.firstIndex(where: { $0.id == piece.id }) {
             pieces[index] = piece
         }
@@ -71,7 +71,14 @@ final class ShapeShifterViewModel: ObservableObject {
         case .hard: count = min(6, 4 + level / 2)
         }
         pieces = (0..<count).map { index in
-            ShapePiece(id: UUID(), shape: ShapeForm.allCases[index % ShapeForm.allCases.count], offset: .zero, angle: 0, targetAngle: difficulty == .hard ? Double(index * 35 % 180) : 0, isPlaced: false)
+            WharfTile(
+                id: UUID(),
+                shape: WharfGlyphKind.allCases[index % WharfGlyphKind.allCases.count],
+                offset: .zero,
+                angle: 0,
+                targetAngle: difficulty == .hard ? Double(index * 35 % 180) : 0,
+                isPlaced: false
+            )
         }
     }
 
@@ -94,15 +101,15 @@ final class ShapeShifterViewModel: ObservableObject {
     }
 }
 
-struct ShapePiece: Identifiable {
+struct WharfTile: Identifiable {
     let id: UUID
-    let shape: ShapeForm
+    let shape: WharfGlyphKind
     var offset: CGSize
     var angle: Double
     let targetAngle: Double
     var isPlaced: Bool
 }
 
-enum ShapeForm: CaseIterable {
+enum WharfGlyphKind: CaseIterable {
     case circle, square, triangle
 }

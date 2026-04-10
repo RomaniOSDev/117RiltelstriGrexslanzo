@@ -7,7 +7,7 @@
 import Foundation
 import AppsFlyerLib
 
-/// Ответ эндпоинта конфига
+
 struct ConfigResponse {
     let ok: Bool
     let url: String?
@@ -15,32 +15,30 @@ struct ConfigResponse {
     let message: String?
 }
 
-/// Ключи для сохранения url и expires
+
 enum ConfigManagerKeys {
     static let savedURL = "ConfigManagerSavedURL"
     static let savedExpires = "ConfigManagerSavedExpires"
 }
 
-/// Провайдер опциональных данных (Firebase). Установите из AppDelegate при инициализации Firebase.
+
 enum ConfigManagerOptionalData {
     static var pushToken: String?
     static var firebaseProjectId: String?
 }
 
-/// Менеджер запроса конфига: формирует тело, отправляет POST, сохраняет url/expires.
+
 final class ConfigManager {
 
     static let shared = ConfigManager()
 
-    /// URL эндпоинта конфига.
     var configEndpointURL: URL? = URL(string: "https://riltelstrigrexslanzo.com/config.php")
 
-    /// Store ID приложения (iOS — с префиксом "id"). 
     var storeId: String = "id6761062067"
 
     private init() {}
 
-    // MARK: - Сохранённые url и expires
+    // MARK: - url и expires
 
     var savedURL: URL? {
         guard let raw = UserDefaults.standard.string(forKey: ConfigManagerKeys.savedURL) else { return nil }
@@ -53,7 +51,6 @@ final class ConfigManager {
         return v
     }
 
-    /// Ссылка действительна, если сохранена и срок не истёк (expires > текущее время устройства).
     var isSavedURLValid: Bool {
         guard savedURL != nil, let exp = savedExpires else { return false }
         return exp > Int64(Date().timeIntervalSince1970)
@@ -68,13 +65,11 @@ final class ConfigManager {
         }
     }
 
-    // MARK: - Формирование тела запроса
+    // MARK: - Body request
 
-    /// Собирает JSON тела запроса: данные конверсии (без изменений) + af_id, bundle_id, os, store_id, locale; при наличии — push_token, firebase_project_id.
     func buildRequestBody() -> Data? {
         var body: [String: Any] = [:]
 
-        // Данные конверсии (и UDL) — все параметры в неизменённом виде
         if let conversionString = AppsFlyerManager.shared.conversionDataString,
            let data = conversionString.data(using: .utf8),
            let conversion = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
@@ -83,7 +78,6 @@ final class ConfigManager {
             }
         }
 
-        // Дополнительные параметры (не перезаписываем существующие ключи из конверсии)
         if body["af_id"] == nil {
             body["af_id"] = AppsFlyerLib.shared().getAppsFlyerUID()
         }
@@ -109,9 +103,7 @@ final class ConfigManager {
         return try? JSONSerialization.data(withJSONObject: body)
     }
 
-    // MARK: - Запрос к конфигу
 
-    /// Выполняет POST к эндпоинту конфига. При успехе (200 и ok == true) сохраняет url и expires.
     func requestConfig(completion: @escaping (Result<ConfigResponse, Error>) -> Void) {
         guard let endpoint = configEndpointURL else {
             completion(.failure(ConfigError.missingEndpoint))

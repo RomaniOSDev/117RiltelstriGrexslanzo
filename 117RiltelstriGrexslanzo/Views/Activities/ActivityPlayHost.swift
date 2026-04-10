@@ -21,12 +21,12 @@ struct ActivityPlayHost: View {
     var body: some View {
         ZStack {
             switch context.kind {
-            case .shapeShifter:
-                ShapeShifterView(context: context, onFinish: finish)
-            case .patternMatrix:
-                PatternMatrixView(context: context, onFinish: finish)
-            case .colorQuest:
-                ColorQuestView(context: context, onFinish: finish)
+            case .wharfSnap:
+                WharfSnapPlayView(context: context, onFinish: finish)
+            case .glyphGrid:
+                GlyphGridPlayView(context: context, onFinish: finish)
+            case .chromaForge:
+                ChromaForgePlayView(context: context, onFinish: finish)
             }
         }
         .fullScreenCover(item: $resultData) { result in

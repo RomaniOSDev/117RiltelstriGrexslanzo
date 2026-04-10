@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class PatternMatrixViewModel: ObservableObject {
+final class GlyphGridSession: ObservableObject {
     enum Phase {
         case preview
         case solve

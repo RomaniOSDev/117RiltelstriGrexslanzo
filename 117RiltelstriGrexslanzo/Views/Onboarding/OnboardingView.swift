@@ -14,12 +14,24 @@ struct OnboardingView: View {
     var body: some View {
         VStack(spacing: 16) {
             TabView(selection: $page) {
-                onboardingPage(title: "Learn Through Play", subtitle: "Explore logic, shapes, and colors in short fun challenges.", index: 0)
-                    .tag(0)
-                onboardingPage(title: "Track Your Progress", subtitle: "Collect stars and unlock new levels as you improve.", index: 1)
-                    .tag(1)
-                onboardingPage(title: "Grow Every Day", subtitle: "Practice, retry, and build stronger thinking skills.", index: 2)
-                    .tag(2)
+                onboardingPage(
+                    title: "Playful workshops",
+                    subtitle: "Short labs mix logic puzzles, glowing grids, and color forging without feeling like homework.",
+                    index: 0
+                )
+                .tag(0)
+                onboardingPage(
+                    title: "Your deck, your pace",
+                    subtitle: "Sparks mark how cleanly you finish each tier. Locked steps open as you prove consistency.",
+                    index: 1
+                )
+                .tag(1)
+                onboardingPage(
+                    title: "Keep the streak",
+                    subtitle: "Retry, sharpen accuracy, and watch the milestone vault fill with real progress.",
+                    index: 2
+                )
+                .tag(2)
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
             .frame(maxHeight: .infinity, alignment: .top)
@@ -31,7 +43,7 @@ struct OnboardingView: View {
                     onFinish()
                 }
             }) {
-                Text(page == 2 ? "Start Learning" : "Next")
+                Text(page == 2 ? "Enter the studio" : "Continue")
                     .font(.headline)
                     .foregroundStyle(Color.appTextPrimary)
                     .frame(maxWidth: .infinity, minHeight: 52)
@@ -49,7 +61,7 @@ struct OnboardingView: View {
 
     private func onboardingPage(title: String, subtitle: String, index: Int) -> some View {
         VStack(spacing: 20) {
-            OnboardingIllustrationView(index: index)
+            BloomOnboardingCanvas(index: index)
                 .frame(height: 280)
             Text(title)
                 .font(.title2.bold())
@@ -69,7 +81,7 @@ struct OnboardingView: View {
     }
 }
 
-private struct OnboardingIllustrationView: View {
+private struct BloomOnboardingCanvas: View {
     let index: Int
     @State private var animate = false
 
@@ -77,23 +89,29 @@ private struct OnboardingIllustrationView: View {
         Canvas { context, size in
             let w = size.width
             let h = size.height
-            let progress = animate ? 1.0 : 0.2
-            let baseY = h * (0.45 + 0.05 * sin(progress * .pi))
+            let wave = animate ? 1.0 : 0.35
+            let midY = h * 0.52
 
-            var path = Path()
-            path.move(to: CGPoint(x: w * 0.1, y: baseY))
-            path.addCurve(to: CGPoint(x: w * 0.9, y: baseY),
-                          control1: CGPoint(x: w * 0.3, y: baseY - 50 * progress),
-                          control2: CGPoint(x: w * 0.7, y: baseY + 50 * progress))
-            context.stroke(path, with: .color(Color.appAccent), lineWidth: 8)
+            var ribbon = Path()
+            ribbon.move(to: CGPoint(x: w * 0.08, y: midY))
+            ribbon.addQuadCurve(
+                to: CGPoint(x: w * 0.92, y: midY * 0.92),
+                control: CGPoint(x: w * 0.5, y: midY - 70 * wave)
+            )
+            context.stroke(ribbon, with: .color(Color.appPrimary.opacity(0.75)), lineWidth: 6)
 
-            let circles = 3 + index
-            for i in 0..<circles {
-                let x = w * (0.18 + Double(i) * 0.18)
-                let y = h * (0.2 + 0.12 * Double((i + index) % 3))
-                let r = 18 + CGFloat(i * 2)
-                let circle = Path(ellipseIn: CGRect(x: x, y: y + CGFloat(20 * (1 - progress)), width: r, height: r))
-                context.fill(circle, with: .color(Color.appPrimary.opacity(0.6 + 0.1 * Double(i))))
+            let markers = 2 + index
+            for i in 0..<markers {
+                let t = Double(i) / Double(max(1, markers))
+                let x = w * (0.22 + t * 0.56)
+                let y = h * (0.22 + 0.1 * Double((i + index) % 4)) + CGFloat(18 * (1 - wave))
+                let rect = CGRect(x: x, y: y, width: 22 + CGFloat(i * 3), height: 22 + CGFloat(i * 3))
+                var diamond = Path()
+                diamond.addRoundedRect(in: rect, cornerSize: CGSize(width: 6, height: 6))
+                context.fill(
+                    diamond,
+                    with: .color(Color.appAccent.opacity(0.35 + Double(i) * 0.12))
+                )
             }
         }
         .onAppear {

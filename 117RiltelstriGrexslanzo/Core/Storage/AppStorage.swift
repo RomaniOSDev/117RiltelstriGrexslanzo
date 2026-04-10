@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 extension Notification.Name {
-    static let appProgressReset = Notification.Name("appProgressReset")
+    static let rgBloomProgressReset = Notification.Name("rgBloomProgressReset")
 }
 
 final class AppStorageStore: ObservableObject {
@@ -23,11 +23,11 @@ final class AppStorageStore: ObservableObject {
 
     private let defaults: UserDefaults
     private enum Keys {
-        static let hasSeenOnboarding = "hasSeenOnboarding"
-        static let starsByLevel = "starsByLevel"
-        static let unlockedLevels = "unlockedLevels"
-        static let totalPlayTime = "totalPlayTime"
-        static let totalActivitiesPlayed = "totalActivitiesPlayed"
+        static let hasSeenOnboarding = "rgBloom.hasSeenOnboarding"
+        static let starsByLevel = "rgBloom.starsByLevel"
+        static let unlockedLevels = "rgBloom.unlockedLevels"
+        static let totalPlayTime = "rgBloom.totalPlayTime"
+        static let totalActivitiesPlayed = "rgBloom.totalActivitiesPlayed"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -76,7 +76,7 @@ final class AppStorageStore: ObservableObject {
         totalPlayTime = 0
         totalActivitiesPlayed = 0
         persist()
-        NotificationCenter.default.post(name: .appProgressReset, object: nil)
+        NotificationCenter.default.post(name: .rgBloomProgressReset, object: nil)
     }
 
     var totalStars: Int {
@@ -89,10 +89,10 @@ final class AppStorageStore: ObservableObject {
 
     var achievements: [Achievement] {
         [
-            Achievement(id: "first_win", title: "First Victory", detail: "Complete your first challenge.", isUnlocked: totalActivitiesPlayed >= 1),
-            Achievement(id: "star_collector", title: "Star Collector", detail: "Earn 20 stars in total.", isUnlocked: totalStars >= 20),
-            Achievement(id: "steady_focus", title: "Steady Focus", detail: "Play for 15 minutes total.", isUnlocked: totalPlayTime >= 900),
-            Achievement(id: "academy_explorer", title: "Academy Explorer", detail: "Complete 12 levels.", isUnlocked: completedLevelCount >= 12)
+            Achievement(id: "bloom_first_spark", title: "First Spark", detail: "Finish any workshop run once.", isUnlocked: totalActivitiesPlayed >= 1),
+            Achievement(id: "bloom_star_trail", title: "Star Trail", detail: "Collect 20 sparks total.", isUnlocked: totalStars >= 20),
+            Achievement(id: "bloom_deep_run", title: "Deep Run", detail: "Spend 15 minutes playing overall.", isUnlocked: totalPlayTime >= 900),
+            Achievement(id: "bloom_atlas", title: "Atlas Seeker", detail: "Clear 12 tier checkpoints.", isUnlocked: completedLevelCount >= 12)
         ]
     }
 

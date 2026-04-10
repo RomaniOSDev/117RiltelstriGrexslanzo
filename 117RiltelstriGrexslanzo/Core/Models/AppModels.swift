@@ -9,25 +9,25 @@ import Foundation
 import SwiftUI
 
 enum ActivityKind: String, CaseIterable, Identifiable, Codable {
-    case shapeShifter
-    case patternMatrix
-    case colorQuest
+    case wharfSnap
+    case glyphGrid
+    case chromaForge
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .shapeShifter: return "Shape Shifter"
-        case .patternMatrix: return "Pattern Matrix"
-        case .colorQuest: return "Color Quest"
+        case .wharfSnap: return "Wharf Snap"
+        case .glyphGrid: return "Glyph Grid"
+        case .chromaForge: return "Chroma Forge"
         }
     }
 
     var icon: String {
         switch self {
-        case .shapeShifter: return "square.on.circle"
-        case .patternMatrix: return "square.grid.3x3.fill"
-        case .colorQuest: return "paintpalette.fill"
+        case .wharfSnap: return "square.stack.3d.forward.dottedline.fill"
+        case .glyphGrid: return "circle.hexagongrid.fill"
+        case .chromaForge: return "drop.triangle.fill"
         }
     }
 }
@@ -39,7 +39,13 @@ enum GameDifficulty: String, CaseIterable, Identifiable, Codable {
 
     var id: String { rawValue }
 
-    var title: String { rawValue.capitalized }
+    var title: String {
+        switch self {
+        case .easy: return "Calm"
+        case .normal: return "Steady"
+        case .hard: return "Peak"
+        }
+    }
 }
 
 struct ActivityContext: Hashable {

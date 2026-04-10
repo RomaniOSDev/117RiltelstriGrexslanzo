@@ -6,7 +6,7 @@
 
 import SwiftUI
 
-/// Три точки с последовательной пульсацией (анимированный индикатор).
+
 struct AnimatedLoadingIndicator: View {
     var body: some View {
         TimelineView(.animation(minimumInterval: 1/30)) { context in
@@ -37,7 +37,7 @@ struct AnimatedLoadingIndicator: View {
     }
 }
 
-/// Кольцо загрузки с вращением и градиентом.
+
 struct RingLoadingIndicator: View {
     @State private var rotation: Double = 0
 
@@ -66,7 +66,6 @@ struct RingLoadingIndicator: View {
     }
 }
 
-/// Полноэкранный экран загрузки: градиент как в приложении + анимированный индикатор.
 struct LoadingView: View {
     var body: some View {
         ZStack {

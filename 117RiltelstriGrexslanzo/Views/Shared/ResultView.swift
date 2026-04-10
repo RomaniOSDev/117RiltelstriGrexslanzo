@@ -20,7 +20,7 @@ struct ResultView: View {
         ScrollView {
             VStack(spacing: 18) {
                 if let achievement = result.unlockedAchievement, showBanner {
-                    Text("Achievement unlocked: \(achievement)")
+                    Text("Badge unlocked: \(achievement)")
                         .font(.headline)
                         .foregroundStyle(Color.appTextPrimary)
                         .padding()
@@ -39,7 +39,7 @@ struct ResultView: View {
                         .transition(.move(edge: .top).combined(with: .opacity))
                 }
 
-                Text("Great Job!")
+                Text("Workshop wrapped")
                     .font(.largeTitle.bold())
                     .foregroundStyle(Color.appTextPrimary)
 
@@ -53,13 +53,13 @@ struct ResultView: View {
                 }
                 .padding(.vertical, 6)
 
-                resultCard(title: "Accuracy", value: "\(result.accuracy)%")
-                resultCard(title: "Completion Time", value: "\(result.completionTime) sec")
-                resultCard(title: "Stars Earned", value: "\(result.stars)")
+                resultCard(title: "Precision", value: "\(result.accuracy)%")
+                resultCard(title: "Elapsed", value: "\(result.completionTime) sec")
+                resultCard(title: "Sparks", value: "\(result.stars)")
 
-                actionButton(title: "Next Level", style: .primary, action: onNext)
-                actionButton(title: "Retry", style: .accent, action: onRetry)
-                actionButton(title: "Back to Levels", style: .neutral, action: onLevels)
+                actionButton(title: "Next tier", style: .primary, action: onNext)
+                actionButton(title: "Run again", style: .accent, action: onRetry)
+                actionButton(title: "Back to deck", style: .neutral, action: onLevels)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 20)

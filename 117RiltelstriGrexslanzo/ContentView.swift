@@ -23,7 +23,7 @@ struct ContentView: View {
         }
         .environmentObject(appStorage)
         .id(refreshID)
-        .onReceive(NotificationCenter.default.publisher(for: .appProgressReset)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .rgBloomProgressReset)) { _ in
             refreshID = UUID()
         }
     }

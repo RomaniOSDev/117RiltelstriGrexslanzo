@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-final class ColorQuestViewModel: ObservableObject {
+final class ChromaForgeSession: ObservableObject {
     enum ValidationOutcome {
         case miss
         case advanced

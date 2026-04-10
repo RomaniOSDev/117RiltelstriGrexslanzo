@@ -14,7 +14,7 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Your Progress")
+                Text("Milestone vault")
                     .font(.largeTitle.bold())
                     .foregroundStyle(Color.appTextPrimary)
                     .padding(.top, 8)
@@ -26,7 +26,7 @@ struct ProfileView: View {
                         Image(systemName: "gearshape.fill")
                             .font(.title3)
                             .foregroundStyle(Color.appPrimary)
-                        Text("Settings")
+                        Text("Preferences")
                             .font(.headline)
                             .foregroundStyle(Color.appTextPrimary)
                         Spacer()
@@ -40,11 +40,11 @@ struct ProfileView: View {
                 .buttonStyle(.plain)
                 .appPanel(cornerRadius: 16, elevated: true)
 
-                statRow(title: "Activities Played", value: "\(storage.totalActivitiesPlayed)")
-                statRow(title: "Play Time", value: "\(Int(storage.totalPlayTime)) sec")
-                statRow(title: "Stars Earned", value: "\(storage.totalStars)")
+                statRow(title: "Workshops finished", value: "\(storage.totalActivitiesPlayed)")
+                statRow(title: "Focus seconds", value: "\(Int(storage.totalPlayTime)) sec")
+                statRow(title: "Sparks saved", value: "\(storage.totalStars)")
 
-                Text("Achievements")
+                Text("Badge cabinet")
                     .font(.title3.bold())
                     .foregroundStyle(Color.appTextPrimary)
                 ForEach(storage.achievements) { achievement in
@@ -65,7 +65,7 @@ struct ProfileView: View {
                     .appPanel(cornerRadius: 14, elevated: achievement.isUnlocked)
                 }
 
-                Button("Reset All Progress") {
+                Button("Clear all milestones") {
                     showResetAlert = true
                 }
                 .buttonStyle(.plain)
@@ -75,18 +75,20 @@ struct ProfileView: View {
                 .appProminentFill(cornerRadius: 14)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-                .alert("Reset all progress?", isPresented: $showResetAlert) {
+                .alert("Clear every milestone?", isPresented: $showResetAlert) {
                     Button("Cancel", role: .cancel) { }
-                    Button("Reset", role: .destructive) {
+                    Button("Clear", role: .destructive) {
                         storage.resetAll()
                     }
+                } message: {
+                    Text("Onboarding will show again on next launch.")
                 }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 20)
         }
         .appScreenBackdrop()
-        .navigationTitle("Profile")
+        .navigationTitle("Milestones")
     }
 
     private func statRow(title: String, value: String) -> some View {

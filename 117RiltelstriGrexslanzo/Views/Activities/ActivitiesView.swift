@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActivitiesView: View {
     @EnvironmentObject private var storage: AppStorageStore
-    @State private var selectedActivity: ActivityKind = .shapeShifter
+    @State private var selectedActivity: ActivityKind = .wharfSnap
     @State private var selectedDifficulty: GameDifficulty = .easy
 
     private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
@@ -17,7 +17,7 @@ struct ActivitiesView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Choose an Activity")
+                Text("Workshop Deck")
                     .font(.largeTitle.bold())
                     .foregroundStyle(Color.appTextPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -33,7 +33,7 @@ struct ActivitiesView: View {
             .padding(.bottom, 20)
         }
         .appScreenBackdrop()
-        .navigationTitle("Activities")
+        .navigationTitle("Challenge Deck")
     }
 
     private var activitySelector: some View {
@@ -97,7 +97,7 @@ struct ActivitiesView: View {
 
     private func levelCell(level: Int, locked: Bool) -> some View {
         VStack(spacing: 6) {
-            Text("Level \(level)")
+            Text("Tier \(level)")
                 .font(.subheadline.bold())
                 .foregroundStyle(Color.appTextPrimary)
                 .lineLimit(1)

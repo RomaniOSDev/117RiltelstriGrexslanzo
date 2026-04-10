@@ -7,22 +7,22 @@
 
 import SwiftUI
 
-struct PatternMatrixView: View {
+struct GlyphGridPlayView: View {
     let context: ActivityContext
     let onFinish: (ActivityResultData) -> Void
 
-    @StateObject private var viewModel: PatternMatrixViewModel
+    @StateObject private var viewModel: GlyphGridSession
 
     init(context: ActivityContext, onFinish: @escaping (ActivityResultData) -> Void) {
         self.context = context
         self.onFinish = onFinish
-        _viewModel = StateObject(wrappedValue: PatternMatrixViewModel(difficulty: context.difficulty, level: context.level))
+        _viewModel = StateObject(wrappedValue: GlyphGridSession(difficulty: context.difficulty, level: context.level))
     }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text(viewModel.phase == .preview ? "Observe the pattern: \(viewModel.previewLeft)s" : "Rebuild the pattern")
+                Text(viewModel.phase == .preview ? "Study the glow: \(viewModel.previewLeft)s" : "Restore the same glow tiles")
                     .font(.headline)
                     .foregroundStyle(Color.appTextPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -42,7 +42,7 @@ struct PatternMatrixView: View {
                 .padding()
                 .appPlayfield(cornerRadius: 16)
 
-                Button("Submit") {
+                Button("Lock Pattern") {
                     viewModel.finishNow()
                     onFinish(viewModel.result())
                 }
@@ -58,7 +58,7 @@ struct PatternMatrixView: View {
             .padding(.bottom, 20)
         }
         .appScreenBackdrop()
-        .navigationTitle("Pattern Matrix")
+        .navigationTitle(ActivityKind.glyphGrid.title)
     }
 
     private func cellGradient(index: Int) -> LinearGradient {

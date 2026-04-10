@@ -16,19 +16,19 @@ struct MainTabView: View {
             NavigationStack {
                 HomeView()
             }
-            .tabItem { Label("Home", systemImage: "house.fill") }
+            .tabItem { Label("Studio", systemImage: "sparkles") }
             .tag(0)
 
             NavigationStack {
                 ActivitiesView()
             }
-            .tabItem { Label("Activities", systemImage: "gamecontroller.fill") }
+            .tabItem { Label("Deck", systemImage: "rectangle.stack.fill") }
             .tag(1)
 
             NavigationStack {
                 ProfileView()
             }
-            .tabItem { Label("Profile", systemImage: "person.fill") }
+            .tabItem { Label("Milestones", systemImage: "chart.line.uptrend.xyaxis") }
             .tag(2)
         }
         .environment(\.mainTabSelection, $selectedTab)

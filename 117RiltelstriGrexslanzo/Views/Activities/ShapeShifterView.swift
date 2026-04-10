@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct ShapeShifterView: View {
+struct WharfSnapPlayView: View {
     let context: ActivityContext
     let onFinish: (ActivityResultData) -> Void
 
-    @StateObject private var viewModel: ShapeShifterViewModel
+    @StateObject private var viewModel: WharfSnapSession
 
     init(context: ActivityContext, onFinish: @escaping (ActivityResultData) -> Void) {
         self.context = context
         self.onFinish = onFinish
-        _viewModel = StateObject(wrappedValue: ShapeShifterViewModel(difficulty: context.difficulty, level: context.level))
+        _viewModel = StateObject(wrappedValue: WharfSnapSession(difficulty: context.difficulty, level: context.level))
     }
 
     var body: some View {
@@ -40,7 +40,7 @@ struct ShapeShifterView: View {
                 }
                 .frame(height: 360)
 
-                Button("Finish Challenge") {
+                Button("Seal the Dock") {
                     viewModel.forceFinish()
                     onFinish(viewModel.result())
                 }
@@ -56,7 +56,7 @@ struct ShapeShifterView: View {
             .padding(.bottom, 20)
         }
         .appScreenBackdrop()
-        .navigationTitle("Shape Shifter")
+        .navigationTitle(ActivityKind.wharfSnap.title)
         .onChange(of: viewModel.isFinished) { _, done in
             if done { onFinish(viewModel.result()) }
         }
@@ -64,7 +64,7 @@ struct ShapeShifterView: View {
 
     private var header: some View {
         HStack {
-            Text("Time: \(viewModel.timeRemaining)s")
+            Text("Clock: \(viewModel.timeRemaining)s")
                 .font(.headline)
                 .foregroundStyle(Color.appTextPrimary)
             Spacer()
@@ -96,7 +96,7 @@ struct ShapeShifterView: View {
                 x: size.width * (0.2 + Double(column) * 0.28),
                 y: size.height * (0.72 + Double(row) * 0.18)
             )
-            DraggableShapePiece(
+            DraggableWharfTile(
                 piece: piece,
                 target: viewModel.targets.indices.contains(index) ? viewModel.targets[index] : .zero,
                 isHard: context.difficulty == .hard,
@@ -107,7 +107,7 @@ struct ShapeShifterView: View {
         }
     }
 
-    private func shapeView(for form: ShapeForm) -> some InsettableShape {
+    private func shapeView(for form: WharfGlyphKind) -> some InsettableShape {
         switch form {
         case .circle: return AnyInsettableShape(Circle())
         case .square: return AnyInsettableShape(RoundedRectangle(cornerRadius: 10))
@@ -116,12 +116,12 @@ struct ShapeShifterView: View {
     }
 }
 
-private struct DraggableShapePiece: View {
-    @State var piece: ShapePiece
+private struct DraggableWharfTile: View {
+    @State var piece: WharfTile
     let target: CGPoint
     let isHard: Bool
     let startPosition: CGPoint
-    let onUpdate: (ShapePiece) -> Void
+    let onUpdate: (WharfTile) -> Void
 
     var body: some View {
         shapeView(for: piece.shape)
@@ -158,7 +158,7 @@ private struct DraggableShapePiece: View {
             .position(startPosition)
     }
 
-    private func shapeView(for form: ShapeForm) -> some Shape {
+    private func shapeView(for form: WharfGlyphKind) -> some Shape {
         switch form {
         case .circle: return AnyShape(Circle())
         case .square: return AnyShape(RoundedRectangle(cornerRadius: 10))

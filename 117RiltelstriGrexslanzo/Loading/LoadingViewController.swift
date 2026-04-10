@@ -7,14 +7,14 @@
 import UIKit
 import SwiftUI
 
-/// Максимальное ожидание данных конверсии перед конфиг-запросом.
+
 private let conversionDataWaitInterval: TimeInterval = 10
-/// Окно свежести conversion-данных для fast-path при старте.
+
 private let conversionDataFreshnessWindow: TimeInterval = 10
-/// Максимальное время загрузки (сек): при нормальном интернете не должно превышать 15.
+
 private let maxLoadingTimeInterval: TimeInterval = 15
 
-/// Задержка перед стартом обычного config-flow (когда нет pending push URL).
+
 private let ordinaryStartDelayInterval: TimeInterval = 5
 
 final class LoadingViewController: UIViewController {
@@ -26,7 +26,6 @@ final class LoadingViewController: UIViewController {
     private var conversionObserver: NSObjectProtocol?
     private var didStartConfigRequest = false
     private var ordinaryStartWorkItem: DispatchWorkItem?
-    /// Флаг: config-flow уже запущен (или запланирован) — повторно не стартуем.
     private var isConfigFlowInProgress = false
 
     override func viewDidLoad() {
@@ -51,8 +50,7 @@ final class LoadingViewController: UIViewController {
     private func startConfigFlow() {
         if didFinishTransition { return }
         if let pushURL = PushNotificationURLRouter.shared.consumePendingURL() {
-            // Push-ветка: отменяем отложенный обычный старт, открываем WebView сразу (без HEAD-проверки —
-            // редиректы и ATS обрабатывает WKWebView так же, как в других приложениях).
+
             ordinaryStartWorkItem?.cancel()
             ordinaryStartWorkItem = nil
             isConfigFlowInProgress = true
@@ -61,8 +59,7 @@ final class LoadingViewController: UIViewController {
             return
         }
 
-        // Обычный старт: запускаем config-flow не сразу, а после задержки.
-        // Это стабилизирует поведение на TestFlight, когда приложение уходит в background/foreground.
+
         guard !isConfigFlowInProgress, ordinaryStartWorkItem == nil else { return }
         isConfigFlowInProgress = true
         showLoadingState()
@@ -103,7 +100,6 @@ final class LoadingViewController: UIViewController {
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + maxLoadingTimeInterval, execute: timeoutWorkItem!)
 
-        // Есть действительная сохранённая ссылка — сразу показываем WebView
         if config.isSavedURLValid, let url = config.savedURL {
             cancelTimeout()
             transitionToWebView(url: url)
@@ -183,15 +179,12 @@ final class LoadingViewController: UIViewController {
     }
 
     private func waitForConversionDataThenRequestConfig() {
-        // Fast-path только для свежих conversion-данных,
-        // чтобы не использовать устаревшее значение из прошлых запусков.
+
         if AppsFlyerManager.shared.hasFreshConversionData(within: conversionDataFreshnessWindow) {
             performConfigRequest()
             return
         }
 
-        // Subscribe first, then re-check to avoid a race where AppsFlyer posts the notification
-        // between the initial nil check and observer registration.
         conversionObserver = NotificationCenter.default.addObserver(
             forName: .appsFlyerConversionDataReady,
             object: nil,
@@ -218,7 +211,6 @@ final class LoadingViewController: UIViewController {
         }
     }
 
-    /// При ошибке: если есть сохранённая ссылка — WebView с ней, иначе — ContentView.
     private func transitionToContentViewOrSavedWebView() {
         if let url = ConfigManager.shared.savedURL {
             transitionToWebView(url: url)
